@@ -108,10 +108,3 @@ class PlayReview:
     def extract_by_class(cls, review: Tag, class_name: str) -> Tag:
         return review.find(class_=class_name)
 
-
-if __name__ == '__main__':
-    play = PlayReview('com.supercell.clashofclans')
-    for i in range(2):
-        reviews = play.get_reviews(i)
-        for review in reviews:
-            print(review.date)
