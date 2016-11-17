@@ -59,7 +59,7 @@ class PlayReview:
         self._app_id = app_id
 
     def get_reviews(self, page_num: int) -> List[Review]:
-        response = requests.post(GET_REVIEW_URL, data=self.request_params(page_num))
+        response = requests.post(GET_REVIEW_URL, data=self._request_params(page_num))
         # Delete because the beginning of the string is useless.
         response_obj = json.loads(response.text[4:])
         html = response_obj[0][2]
@@ -67,9 +67,9 @@ class PlayReview:
 
         single_reviews = soup.find_all(class_='single-review')
 
-        return [self.create_review(review) for review in single_reviews]
+        return [self._create_review(review) for review in single_reviews]
 
-    def request_params(self, page_num: int):
+    def _request_params(self, page_num: int):
 
         # reviewSortOrder:
         #     0: date desc
@@ -86,12 +86,12 @@ class PlayReview:
           'hl': 'ja'
         }
 
-    def create_review(self, review: Tag) -> Review:
-        div_review_header = self.extract_by_class(review, 'review-header')
-        review_info = self.review_header_info(div_review_header)
+    def _create_review(self, review: Tag) -> Review:
+        div_review_header = self._extract_by_class(review, 'review-header')
+        review_info = self._review_header_info(div_review_header)
 
-        div_review_body = self.extract_by_class(review, 'review-body')
-        review_body = self.review_body_info(div_review_body)
+        div_review_body = self._extract_by_class(review, 'review-body')
+        review_body = self._review_body_info(div_review_body)
 
         return Review(
             data_review_id=review_info['data_review_id'],
@@ -102,13 +102,13 @@ class PlayReview:
             comment=review_body['comment'],
             rating=review_info['rating'])
 
-    def review_header_info(self, review_header: Tag) -> Dict[str, object]:
+    def _review_header_info(self, review_header: Tag) -> Dict[str, object]:
         data_review_id = review_header['data-reviewid'].split('gp:')[1]
-        review_id = self.extract_by_class(review_header, 'reviews-permalink')['href'].split('reviewId=')[1]
-        author = self.extract_by_class(review_header, 'author-name').find('a').text
-        rating = self.extract_by_class(review_header, 'tiny-star star-rating-non-editable-container')['aria-label']
-        date_ja = self.extract_by_class(review_header, 'review-date').text
-        date = self.normalize_date(date_ja)
+        review_id = self._extract_by_class(review_header, 'reviews-permalink')['href'].split('reviewId=')[1]
+        author = self._extract_by_class(review_header, 'author-name').find('a').text
+        rating = self._extract_by_class(review_header, 'tiny-star star-rating-non-editable-container')['aria-label']
+        date_ja = self._extract_by_class(review_header, 'review-date').text
+        date = self._normalize_date(date_ja)
 
         return {
             'data_review_id': data_review_id,
@@ -119,7 +119,7 @@ class PlayReview:
         }
 
     @classmethod
-    def normalize_date(cls, date_ja: str) -> datetime.date:
+    def _normalize_date(cls, date_ja: str) -> datetime.date:
         split = date_ja.split('年')
         year = split[0]
         split = split[1].split('月')
@@ -129,7 +129,7 @@ class PlayReview:
         return datetime.date(int(year), int(month), int(day))
 
     @classmethod
-    def review_body_info(cls, review_body: Tag) -> Dict[str, str]:
+    def _review_body_info(cls, review_body: Tag) -> Dict[str, str]:
         split = review_body.text.split(' ')
         title = split[1]
         comment = split[2]
@@ -140,6 +140,6 @@ class PlayReview:
         }
 
     @classmethod
-    def extract_by_class(cls, review: Tag, class_name: str) -> Tag:
+    def _extract_by_class(cls, review: Tag, class_name: str) -> Tag:
         return review.find(class_=class_name)
 
