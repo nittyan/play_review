@@ -17,5 +17,5 @@ setup(
         'Operating System :: OS Independent',
         'Intended Audience :: Developers'
     ],
-    requires=['requests', 'beautifulsoup4']
+    requires=['requests > 2.12', 'beautifulsoup4 > 4.5']
 )
