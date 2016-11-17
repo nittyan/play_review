@@ -103,7 +103,7 @@ class PlayReview:
             rating=review_info['rating'])
 
     def _review_header_info(self, review_header: Tag) -> Dict[str, object]:
-        data_review_id = review_header['data-reviewid'].split('gp:')[1]
+        data_review_id = review_header['data-reviewid']
         review_id = self._extract_by_class(review_header, 'reviews-permalink')['href'].split('reviewId=')[1]
         author = self._extract_by_class(review_header, 'author-name').text
         rating = self._extract_by_class(review_header, 'tiny-star star-rating-non-editable-container')['aria-label']
