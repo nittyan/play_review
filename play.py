@@ -16,13 +16,41 @@ REVIEW_PER_PAGE = 40
 class Review:
 
     def __init__(self, data_review_id: str, review_id: str, author: str, date: datetime.date, title: str, comment: str, rating: str):
-        self.data_review_id = data_review_id
-        self.review_id = review_id
-        self.author = author
-        self.date = date
-        self.title = title
-        self.comment = comment
-        self.rating = rating
+        self._data_review_id = data_review_id
+        self._review_id = review_id
+        self._author = author
+        self._date = date
+        self._title = title
+        self._comment = comment
+        self._rating = rating
+
+    @property
+    def date_review_id(self):
+        return self._data_review_id
+
+    @property
+    def review_id(self):
+        return self._review_id
+
+    @property
+    def author(self):
+        return self._author
+
+    @property
+    def date(self):
+        return self._date
+
+    @property
+    def title(self):
+        return self._title
+
+    @property
+    def comment(self):
+        return self._comment
+
+    @property
+    def rating(self):
+        return self._rating
 
 
 class PlayReview:
@@ -42,11 +70,18 @@ class PlayReview:
         return [self.create_review(review) for review in single_reviews]
 
     def request_params(self, page_num: int):
+
+        # reviewSortOrder:
+        #     0: date desc
+        #     1: unknown
+        #     2: unknown
+        #     3: unknown
+        #     4: unknown
         return {
           'reviewType': '0',
           'pageNum': str(page_num),
           'id': self._app_id,
-          'reviewSortOrder': '4',
+          'reviewSortOrder': '0',
           'xhr': '1',
           'hl': 'ja'
         }
