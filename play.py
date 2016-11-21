@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import datetime
 import json
+import re
 import requests
 from typing import Dict
 from typing import List
@@ -15,7 +16,7 @@ REVIEW_PER_PAGE = 40
 
 class Review:
 
-    def __init__(self, data_review_id: str, review_id: str, author: str, date: datetime.date, title: str, comment: str, rating: str):
+    def __init__(self, data_review_id: str, review_id: str, author: str, date: datetime.date, title: str, comment: str, rating: int):
         self._data_review_id = data_review_id
         self._review_id = review_id
         self._author = author
@@ -100,7 +101,7 @@ class PlayReview:
             date=review_info['date'],
             title=review_body['title'],
             comment=review_body['comment'],
-            rating=review_info['rating'])
+            rating=min(map(int, re.findall(r'[1-5]', review_info['rating']))))
 
     def _review_header_info(self, review_header: Tag) -> Dict[str, object]:
         data_review_id = review_header['data-reviewid']
